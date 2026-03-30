@@ -1,0 +1,48 @@
+import './App.css'
+
+function App() {
+
+  return (
+    <div className="flex flex-col justify-center items-center mt-2 gap-2">
+      <div className="text-2xl font-bold">WebSocket Chat</div>
+      <select defaultValue="1st" className="select">
+        <option>1st</option>
+        <option>2nd</option>
+        <option>some</option>
+      </select>
+      <button className="btn btn-primary">Select</button>
+      <textarea className="textarea" placeholder="Message"></textarea>
+      <button className="btn btn-primary">Send</button>
+      <div className="flex w-full flex-col">
+        <div className="divider">Chat</div>
+      </div>
+
+      <div className="hero bg-base-200 min-h-1/3">
+        <div className="hero-content text-center">
+          <div className="min-w-[600px] p-4">
+            <div className="chat chat-start">
+              <div className="chat-header">
+                Obi-Wan Kenobi
+                <time className="text-xs opacity-50">2 hour ago</time>
+              </div>
+              <div className="chat-bubble chat-bubble-accent">
+                It's over Anakin,
+                <br />
+                I have the high ground.
+              </div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-header">
+                Obi-Wan Kenobi
+                <time className="text-xs opacity-50">2 hours ago</time>
+              </div>
+              <div className="chat-bubble chat-bubble-info">You underestimate my power!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default App

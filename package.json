@@ -1,0 +1,25 @@
+{
+  "name": "my-nest-demo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\" --names \"API,WEB\" --prefix-colors \"blue,magenta\"",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "eslint --ignore-pattern .gitignore \"packages/*/src/**/*.+(ts|js|tsx)\"",
+    "format": "prettier --ignore-path .gitignore \"packages/*/src/**/*.+(ts|js|tsx)\" --write"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "daisyui": "^5.5.19",
+    "tailwindcss": "^4.2.2"
+  }
+}
