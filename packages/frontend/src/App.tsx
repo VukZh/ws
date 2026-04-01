@@ -16,7 +16,7 @@ function App() {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<EventType[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
-  const [room, setRoom] = useState<string>('General');
+  const [room, setRoom] = useState<string>('general');
   const [users, setUsers] = useState<string[]>([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function App() {
       setConnected(true);
     });
     socket.on("event:new", (event: EventType) => {
-      setMessages((prevMessages) => [...prevMessages, event]);
+      setMessages((prevMessages) => [event, ...prevMessages]);
     });
   }, []);
 
@@ -136,12 +136,12 @@ function App() {
               )}
             </div>
 
-            <div className="hero bg-base-200 min-h-1/3 max-h-2/3 overflow-auto m-4">
+            <div className="hero bg-base-200 min-h-1/3 max-h-[80vh] overflow-y-auto m-4">
               <div className="hero-content text-center">
                 <div className="min-w-[600px] p-4">
-                  {messages.map((event) =>
+                  {messages.map((event, i) =>
                     event.author === name ? (
-                      <div className="chat chat-end">
+                      <div className="chat chat-end" key={'' + i + event.author}>
                         <div className="chat-header">
                           {event.author}
                           <time className="text-xs opacity-50">

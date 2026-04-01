@@ -57,7 +57,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       take: 20
     });
 
-    client.emit('event:list', history.reverse());
+    client.emit('event:list', history);
 
     this.server.to(room).emit('user:list', Array.from(this.roomUsers.get(room) || []));
 
