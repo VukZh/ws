@@ -16,8 +16,9 @@ function App() {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<EventType[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
-  const [room, setRoom] = useState<string>('general');
+  const [room, setRoom] = useState<string>("general");
   const [users, setUsers] = useState<string[]>([]);
+  const [allMessages, setAllMessages] = useState<EventType[]>([]);
 
   useEffect(() => {
     const socket = io(`http://localhost:${PORT}`, {
@@ -57,15 +58,20 @@ function App() {
     }
   };
 
+  const handleShowAllMessages = async () => {
+    const res = await fetch(`http://localhost:${PORT}/events/${room}`);
+    const data = await res.json();
+    setAllMessages(data);
+  };
+
   useEffect(() => {
-    console.log("messages", messages);
-  }, [messages]);
+    console.log(allMessages);
+  }, [allMessages]);
 
   return (
     <div className="flex flex-col justify-center items-center mt-2 gap-2">
       <div className="text-2xl font-bold">
-        WebSocket Chat ({room.toUpperCase()})
-        {name && connected && ` - ${name}`}
+        WebSocket Chat ({room.toUpperCase()}){name && connected && ` - ${name}`}
       </div>
 
       {!connected ? (
@@ -98,7 +104,7 @@ function App() {
       ) : (
         <>
           <textarea
-            className="textarea"
+            className="textarea resize-none"
             placeholder="Message"
             onChange={(e) => setMessage(e.target.value)}
             value={message}
@@ -136,12 +142,15 @@ function App() {
               )}
             </div>
 
-            <div className="hero bg-base-200 min-h-1/3 max-h-[80vh] overflow-y-auto m-4">
+            <div className="hero bg-base-200 min-h-1/3 max-h-[71vh] overflow-y-auto m-4">
               <div className="hero-content text-center">
                 <div className="min-w-[600px] p-4">
                   {messages.map((event, i) =>
                     event.author === name ? (
-                      <div className="chat chat-end" key={'' + i + event.author}>
+                      <div
+                        className="chat chat-end"
+                        key={"" + i + event.author}
+                      >
                         <div className="chat-header">
                           {event.author}
                           <time className="text-xs opacity-50">
@@ -196,6 +205,43 @@ function App() {
           >
             Open new tab
           </button>
+          {/*<button className="btn btn-ghost fixed top-4 right-4" onClick={}>*/}
+          {/*  Show all messages in this chat room*/}
+          {/*</button>*/}
+          <label
+            htmlFor="modal2"
+            className="btn btn-ghost fixed top-14 right-4"
+            onClick={handleShowAllMessages}
+          >
+            Show all messages in this chat room
+          </label>
+          <input type="checkbox" id="modal2" className="modal-toggle" />
+          <div className="modal" role="dialog">
+            <div className="modal-box">
+              <h3 className="text-lg font-bold">
+                Messages in {room.toUpperCase()} room
+              </h3>
+              <div className="overflow-y-auto max-h-[80vh]">
+                {allMessages.length
+                  ? allMessages.map((event, i) => (
+                      <div key={"" + i + event.author}>
+                        <div className="chat-header">
+                          {event.author}
+                          <time className="text-xs opacity-50">
+                            {new Date(event.timestamp).toLocaleTimeString()}
+                          </time>
+                        </div>
+                        <div className="font-bold">{event.message}</div>
+                        <br />
+                      </div>
+                    ))
+                  : "No messages yet."}
+              </div>
+            </div>
+            <label className="modal-backdrop" htmlFor="modal2">
+              Close
+            </label>
+          </div>
         </>
       )}
     </div>

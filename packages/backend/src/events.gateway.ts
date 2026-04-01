@@ -10,11 +10,10 @@ import {
 import { Server, Socket } from "socket.io";
 import { PrismaService } from "./prisma/prisma.service";
 
-
 @WebSocketGateway({
   cors: {
-    origin: '*'
-  }
+    origin: "*",
+  },
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -22,8 +21,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private roomUsers: Map<string, Set<string>> = new Map();
 
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
   handleConnection(client: Socket): any {
     console.log(`Client connected: ${client.id}`);
@@ -33,17 +31,16 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage('room:join')
+  @SubscribeMessage("room:join")
   async onRoomJoin(
-    @MessageBody() data: {room: string, username: string},
-    @ConnectedSocket() client: Socket
+    @MessageBody() data: { room: string; username: string },
+    @ConnectedSocket() client: Socket,
   ) {
-
-    const {room, username} = data;
+    const { room, username } = data;
     client.join(room);
 
-    if (!this.roomUsers.has(room)){
-        this.roomUsers.set(room, new Set());
+    if (!this.roomUsers.has(room)) {
+      this.roomUsers.set(room, new Set());
     }
     this.roomUsers.get(room)!.add(username);
 
@@ -52,49 +49,45 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         room: room,
       },
       orderBy: {
-        timestamp: 'desc'
+        timestamp: "desc",
       },
-      take: 20
+      take: 10,
     });
 
-    client.emit('event:list', history);
+    client.emit("event:list", history);
 
-    this.server.to(room).emit('user:list', Array.from(this.roomUsers.get(room) || []));
+    this.server
+      .to(room)
+      .emit("user:list", Array.from(this.roomUsers.get(room) || []));
 
     console.log(`Client joined room: ${room}`);
-
   }
 
-  @SubscribeMessage('event:new')
+  @SubscribeMessage("event:new")
   async onEventNew(
-    @MessageBody() data: {
-      room: string,
-      author: string,
-      message: string
-    }
+    @MessageBody() data: { room: string; author: string; message: string },
   ) {
     const event = await this.prisma.event.create({
       data: {
         room: data.room,
         author: data.author,
-        message: data.message
-      }
+        message: data.message,
+      },
     });
-    this.server.to(data.room).emit('event:new', event);
+    this.server.to(data.room).emit("event:new", event);
   }
 
-  @SubscribeMessage('room:leave')
-  async onLeaveRoom (
-    @MessageBody() data: {room: string, username: string},
-    @ConnectedSocket() client: Socket
+  @SubscribeMessage("room:leave")
+  async onLeaveRoom(
+    @MessageBody() data: { room: string; username: string },
+    @ConnectedSocket() client: Socket,
   ) {
     client.leave(data.room);
     if (this.roomUsers.get(data.room)) {
       this.roomUsers.get(data.room)?.delete(data.username);
-      this.server.to(data.room).emit('user:list', Array.from(this.roomUsers.get(data.room) || []));
+      this.server
+        .to(data.room)
+        .emit("user:list", Array.from(this.roomUsers.get(data.room) || []));
     }
   }
-
-
 }
-
