@@ -205,9 +205,6 @@ function App() {
           >
             Open new tab
           </button>
-          {/*<button className="btn btn-ghost fixed top-4 right-4" onClick={}>*/}
-          {/*  Show all messages in this chat room*/}
-          {/*</button>*/}
           <label
             htmlFor="modal2"
             className="btn btn-ghost fixed top-14 right-4"
