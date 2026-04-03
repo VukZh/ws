@@ -154,7 +154,7 @@ function App() {
                         <div className="chat-header">
                           {event.author}
                           <time className="text-xs opacity-50">
-                            {new Date(event.timestamp).toLocaleTimeString()}
+                            {new Date(event.timestamp).toLocaleString()}
                           </time>
                         </div>
                         <div className="chat-bubble chat-bubble-accent">
@@ -166,7 +166,7 @@ function App() {
                         <div className="chat-header">
                           {event.author}
                           <time className="text-xs opacity-50">
-                            {new Date(event.timestamp).toLocaleTimeString()}
+                            {new Date(event.timestamp).toLocaleString()}
                           </time>
                         </div>
                         <div className="chat-bubble chat-bubble-warning">
@@ -225,7 +225,7 @@ function App() {
                         <div className="chat-header">
                           {event.author}
                           <time className="text-xs opacity-50">
-                            {new Date(event.timestamp).toLocaleTimeString()}
+                            {new Date(event.timestamp).toLocaleString()}
                           </time>
                         </div>
                         <div className="font-bold">{event.message}</div>
